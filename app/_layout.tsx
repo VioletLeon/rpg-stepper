@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 export { ErrorBoundary } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ServerProvider from '@/contexts/ServerProvider';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -43,19 +44,31 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: 60 * 1000,
+      retry: 2,
+      staleTime: 60 * 1000,
+    },
+  },
+});
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
+      <ServerProvider>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ThemeProvider>
+      </ServerProvider>
     </QueryClientProvider>
   );
 }

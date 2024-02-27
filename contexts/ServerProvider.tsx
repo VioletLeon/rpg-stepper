@@ -10,13 +10,10 @@ export const useServer = () => {
   if (typeof context === 'undefined') {
     throw new Error('useServer must be used within a ServerProvider');
   }
-
-  console.log('Context fine', typeof context, context);
   return context;
 };
 
 const ServerProvider = ({ children }: { children: React.ReactNode }) => {
-  console.log('server provider init', server);
   return (
     <ServerContext.Provider value={server}>{children}</ServerContext.Provider>
   );

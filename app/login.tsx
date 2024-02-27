@@ -1,10 +1,9 @@
-import LoginForm from '@/components/login/LoginForm';
-
-function Login() {
+const Login = () => {
   return (
-    <div>
-      <h1>Login</h1>
-      <LoginForm />
-    </div>
+    <form>
+      <input type="text" placeholder="Username" />
+      <input type="password" placeholder="Password" />
+      <button type="submit">Login</button>
+    </form>
   );
-}
+};

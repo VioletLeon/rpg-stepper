@@ -6,7 +6,11 @@ import { useState } from 'react';
 export default function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const { signInWithEmailAndPassword, signUpWithEmailAndPassword } = useAuth();
+  const {
+    signInWithEmailAndPassword,
+    signUpWithEmailAndPassword,
+    loginWithGoogle,
+  } = useAuth();
   const { replace } = router;
 
   const handleSignIn = async () => {
@@ -24,6 +28,14 @@ export default function Login() {
       replace('/');
     } catch (error: any) {
       Alert.alert('Sign Up Failed', error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await loginWithGoogle();
+    } catch (error: any) {
+      Alert.alert('Login with Google Failed', error.message);
     }
   };
   return (
@@ -55,6 +67,13 @@ export default function Login() {
       </View>
       <Text className="text-center mt-4">Or</Text>
       {/* Implement any other authentication methods here */}
+      <View className="mt-2">
+        <Button
+          title="Login with Google"
+          onPress={handleGoogleSignIn}
+          color="gray"
+        />
+      </View>
     </View>
   );
 }

@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import type { ReactNode } from 'react';
 import {
+  GoogleAuthProvider,
+  signInWithCredential,
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
@@ -20,6 +27,7 @@ interface AuthContextType {
     email: string,
     password: string
   ) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   signOutSession: () => Promise<void>;
 }
 
@@ -36,6 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const auth = getAuth();
+  GoogleSignin.configure();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -74,6 +83,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // Login with Google function
+  const loginWithGoogle = async () => {
+    try {
+      // Assuming you have configured Google sign-in in your app and have the GoogleSignIn library
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await signInWithCredential(auth, googleCredential);
+      setCurrentUser(userCredential.user);
+    } catch (error) {
+      console.error('Error logging in with Google', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -81,6 +103,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         loading,
         signUpWithEmailAndPassword: signUpWithEmail,
         signInWithEmailAndPassword: signInWithEmail,
+        loginWithGoogle,
         signOutSession,
       }}
     >

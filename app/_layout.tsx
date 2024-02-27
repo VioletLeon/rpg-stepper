@@ -1,6 +1,6 @@
 import '../firebase.config'; // Ensure this is at the top
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-
+import { Slot } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -52,10 +52,7 @@ function RootLayoutNav() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <ServerProvider>
-          <Stack>
-            {/* Your app's routes go here */}
-            <Stack.Screen name="(app)" />
-          </Stack>
+          <Slot />
         </ServerProvider>
       </QueryClientProvider>
     </AuthProvider>

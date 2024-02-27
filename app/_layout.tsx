@@ -9,6 +9,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ServerProvider from '@/contexts/ServerProvider';
 import { AuthProvider } from '@/contexts/AuthProvider';
 import { Stack } from 'expo-router';
+import { View } from 'react-native';
+import Header from '@/components/header/Header';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -52,7 +54,10 @@ function RootLayoutNav() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <ServerProvider>
-          <Slot />
+          <View className="flex-col h-[100vh] w-[100vw] bg-green-900">
+            <Header />
+            <Slot />
+          </View>
         </ServerProvider>
       </QueryClientProvider>
     </AuthProvider>

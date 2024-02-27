@@ -5,7 +5,6 @@ import { Text } from 'react-native';
 const RootLayout = () => {
   const { currentUser, loading } = useAuth();
 
-  console.log(currentUser);
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (loading) {
     return <Text>Loading...</Text>;

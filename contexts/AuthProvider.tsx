@@ -48,15 +48,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signUpWithEmail = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      setCurrentUser(auth.currentUser);
+    } catch (error) {
+      console.error('Error signing up', error);
+    }
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      setCurrentUser(auth.currentUser);
+    } catch (error) {
+      console.error('Error signing in', error);
+    }
   };
 
   const signOutSession = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+      setCurrentUser(null);
+    } catch (error) {
+      console.error('Error signing out', error);
+    }
   };
 
   return (

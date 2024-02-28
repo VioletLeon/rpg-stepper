@@ -17,12 +17,15 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
+      googleServicesFile: './GoogleService-Info.plist',
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
+      package: 'com.violetleon93.rpgstepper',
+      googleServicesFile: './google-services.json',
     },
     web: {
       favicon: './assets/favicon.png',

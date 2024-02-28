@@ -6,11 +6,7 @@ import { useState } from 'react';
 export default function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const {
-    signInWithEmailAndPassword,
-    signUpWithEmailAndPassword,
-    loginWithGoogle,
-  } = useAuth();
+  const { signInWithEmailAndPassword } = useAuth();
   const { replace } = router;
 
   const handleSignIn = async () => {
@@ -22,26 +18,21 @@ export default function Login() {
     }
   };
 
-  const handleSignUp = async () => {
-    try {
-      await signUpWithEmailAndPassword(email, password);
-      replace('/');
-    } catch (error: any) {
-      Alert.alert('Sign Up Failed', error.message);
-    }
+  const handleSignUp = () => {
+    replace('/signup');
   };
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     await loginWithGoogle();
+  //   } catch (error: any) {
+  //     Alert.alert('Login with Google Failed', error.message);
+  //   }
+  // };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await loginWithGoogle();
-    } catch (error: any) {
-      Alert.alert('Login with Google Failed', error.message);
-    }
-  };
   return (
     <View className="flex-col justify-center px-10 h-[100vh] w-[100vw]">
       <TextInput
-        className="border border-gray-300 p-2 rounded h-10 "
+        className="border border-gray-300 p-2 rounded h-10 bg-white text-black"
         placeholder="Email"
         aria-label="Email"
         value={email}
@@ -51,7 +42,7 @@ export default function Login() {
         textContentType="emailAddress"
       />
       <TextInput
-        className="border border-gray-300 p-2 rounded mt-4 h-10"
+        className="border border-gray-300 p-2 rounded mt-4 h-10 bg-white text-black"
         placeholder="Password"
         aria-label="Password"
         value={password}
@@ -65,15 +56,15 @@ export default function Login() {
       <View className="mt-2">
         <Button title="Sign Up" onPress={handleSignUp} color="gray" />
       </View>
-      <Text className="text-center mt-4">Or</Text>
+      {/* <Text className="text-center mt-4">Or</Text> */}
       {/* Implement any other authentication methods here */}
-      <View className="mt-2">
+      {/* <View className="mt-2">
         <Button
           title="Login with Google"
           onPress={handleGoogleSignIn}
           color="gray"
         />
-      </View>
+      </View> */}
     </View>
   );
 }

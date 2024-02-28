@@ -8,9 +8,9 @@ export { ErrorBoundary } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ServerProvider from '@/contexts/ServerProvider';
 import { AuthProvider } from '@/contexts/AuthProvider';
-import { Stack } from 'expo-router';
 import { View } from 'react-native';
-import Header from '@/components/header/Header';
+import { PedometerProvider } from '@/contexts/PedometerProvider';
+import { FirestoreProvider } from '@/contexts/FirestoreProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -51,15 +51,18 @@ const queryClient = new QueryClient({
 
 function RootLayoutNav() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <ServerProvider>
-          <View className="flex-col h-[100vh] w-[100vw] bg-green-900">
-            <Header />
-            <Slot />
-          </View>
-        </ServerProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+    <FirestoreProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <ServerProvider>
+            <PedometerProvider>
+              <View className="h-[110vh] w-[100vw] bg-green-900">
+                <Slot />
+              </View>
+            </PedometerProvider>
+          </ServerProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </FirestoreProvider>
   );
 }

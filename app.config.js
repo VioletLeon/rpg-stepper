@@ -24,7 +24,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.violetleon93.rpgstepper',
+      package: 'rpgstepper.android',
       googleServicesFile: './google-services.json',
     },
     web: {

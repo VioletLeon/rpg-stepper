@@ -31,6 +31,8 @@ export default {
       favicon: './assets/favicon.png',
       output: 'server',
     },
-    plugins: ['expo-router', '@react-native-google-signin/google-signin'],
+    plugins: ['expo-router'],
   },
 };
+
+// '@react-native-google-signin/google-signin'

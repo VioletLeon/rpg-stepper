@@ -1,6 +1,7 @@
+import Header from '@/components/header/Header';
 import { useAuth } from '@/contexts/AuthProvider';
 import { Redirect, Stack } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 const RootLayout = () => {
   const { currentUser, loading } = useAuth();
@@ -19,7 +20,12 @@ const RootLayout = () => {
   }
 
   // This layout can be deferred because it's not the root layout.
-  return <Stack />;
+  return (
+    <View className="flex-col h-[110vh] w-[100vw] bg-green-900">
+      <Header />
+      <Stack screenOptions={{ headerShown: false }} />
+    </View>
+  );
 };
 
 export default RootLayout;

@@ -15,19 +15,20 @@ import {
   signOut,
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
+import { useFirestore } from './FirestoreProvider';
 
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
   signUpWithEmailAndPassword: (
     email: string,
-    password: string
+    password: string,
+    displayName: string
   ) => Promise<void>;
   signInWithEmailAndPassword: (
     email: string,
     password: string
   ) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
   signOutSession: () => Promise<void>;
 }
 
@@ -42,6 +43,9 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const { createUser } = useFirestore();
+
+  console.log(currentUser, 'currentUser');
 
   const auth = getAuth();
   // GoogleSignin.configure();
@@ -56,9 +60,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return unsubscribe;
   }, []);
 
-  const signUpWithEmail = async (email: string, password: string) => {
+  const signUpWithEmail = async (
+    email: string,
+    password: string,
+    displayName: string
+  ) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await user.user.getIdToken();
+
+      if (!email || !password) {
+        throw new Error('Missing email or password');
+      }
+
+      if (!displayName) {
+        throw new Error('Missing display name');
+      }
+
+      // create a user profile in your DB
+      await createUser(userCredential, {
+        email: email,
+        displayName,
+      });
+
       setCurrentUser(auth.currentUser);
     } catch (error) {
       console.error('Error signing up', error);
@@ -103,7 +127,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         loading,
         signUpWithEmailAndPassword: signUpWithEmail,
         signInWithEmailAndPassword: signInWithEmail,
-        loginWithGoogle,
         signOutSession,
       }}
     >

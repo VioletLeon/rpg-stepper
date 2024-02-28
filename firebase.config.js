@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+import 'dotenv/config';
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
@@ -10,13 +11,13 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyBEQclynG09XMRaH2hCZTxKy8TQmzcy9yo',
-  authDomain: 'rpg-stepper.firebaseapp.com',
-  projectId: 'rpg-stepper',
-  storageBucket: 'rpg-stepper.appspot.com',
-  messagingSenderId: '644378735917',
-  appId: '1:644378735917:web:53512d6387fdf6af124fa4',
-  measurementId: 'G-446VRF4TN0',
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -26,7 +27,5 @@ const db = getFirestore(app);
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });
-
-console.log(db);
 
 export { auth, db };

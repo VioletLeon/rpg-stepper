@@ -6,6 +6,13 @@ import React, {
   ReactNode,
 } from 'react';
 import { Pedometer } from 'expo-sensors';
+import GoogleFit, { Scopes } from 'react-native-google-fit';
+import AppleHealthKit, {
+  HealthValue,
+  HealthKitPermissions,
+} from 'react-native-health';
+import { Platform } from 'react-native';
+import { useAppState } from './AppStateProvider';
 
 interface PedometerContextType {
   isPedometerAvailable: string;
@@ -26,6 +33,9 @@ export const PedometerProvider = ({ children }: PedometerProviderProps) => {
     useState<string>('checking');
   const [pastStepCount, setPastStepCount] = useState<number>(0);
   const [currentStepCount, setCurrentStepCount] = useState<number>(0);
+  const { lastBackgroundTime } = useAppState();
+
+  console.log(lastBackgroundTime, 'lastBackgroundTime');
 
   useEffect(() => {
     let subscription: Pedometer.Subscription | null = null;
@@ -34,6 +44,7 @@ export const PedometerProvider = ({ children }: PedometerProviderProps) => {
       // Check permissions
       const { status: existingStatus } = await Pedometer.getPermissionsAsync();
       let finalStatus = existingStatus;
+      console.log('existingStatus', finalStatus);
 
       if (existingStatus !== 'granted') {
         // Permissions have not already been granted, so request them
@@ -43,19 +54,20 @@ export const PedometerProvider = ({ children }: PedometerProviderProps) => {
 
       if (finalStatus === 'granted') {
         setIsPedometerAvailable('yes');
-
         // Permission is granted, start fetching pedometer data
         const isAvailable = await Pedometer.isAvailableAsync();
+        console.log(isAvailable);
         if (isAvailable) {
           const end = new Date();
           const start = new Date();
           start.setDate(end.getDate() - 1);
 
-          const pastStepCountResult = await Pedometer.getStepCountAsync(
-            start,
-            end
-          );
-          setPastStepCount(pastStepCountResult.steps);
+          // // This only works iOS, on Android it will return 0
+          // const pastStepCountResult = await Pedometer.getStepCountAsync(
+          //   start,
+          //   end
+          // );
+          // setPastStepCount(pastStepCountResult.steps);
 
           subscription = Pedometer.watchStepCount((result) => {
             setCurrentStepCount(result.steps);
@@ -67,6 +79,52 @@ export const PedometerProvider = ({ children }: PedometerProviderProps) => {
         setIsPedometerAvailable('denied');
         // Permission was denied, handle accordingly
       }
+    }
+
+    const fetchStepsFromGoogleFit = () => {};
+
+    const fetchStepsAppleHealthKit = () => {
+      const permissions = {
+        permissions: {
+          read: [AppleHealthKit.Constants.Permissions.HeartRate],
+          write: [AppleHealthKit.Constants.Permissions.Steps],
+        },
+      } as HealthKitPermissions;
+
+      AppleHealthKit.initHealthKit(permissions, (err: any) => {
+        if (err) {
+          console.log('error initializing Healthkit: ', err);
+          return;
+        }
+
+        if (lastBackgroundTime === null) {
+          return;
+        }
+
+        const startDate = new Date(lastBackgroundTime).toISOString();
+        const endDate = new Date().toISOString();
+
+        AppleHealthKit.getStepCount(
+          {
+            startDate,
+            endDate,
+          },
+          (err: any, results: HealthValue) => {
+            if (err) {
+              console.log('error reading step count: ', err);
+              return;
+            }
+            console.log('Results', results);
+            setPastStepCount(results.value);
+          }
+        );
+      });
+    };
+
+    if (Platform.OS === 'ios') {
+      fetchStepsAppleHealthKit();
+    } else if (Platform.OS === 'android') {
+      fetchStepsFromGoogleFit();
     }
 
     checkPermissionsAndSubscribe();

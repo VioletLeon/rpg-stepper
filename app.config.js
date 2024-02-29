@@ -31,7 +31,7 @@ export default {
       favicon: './assets/favicon.png',
       output: 'server',
     },
-    plugins: ['expo-router'],
+    plugins: ['expo-router', 'react-native-health'],
     extra: {
       firebase: {
         apiKey: process.env.FIREBASE_API_KEY,

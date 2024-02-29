@@ -3,14 +3,15 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Slot } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 export { ErrorBoundary } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ServerProvider from '@/contexts/ServerProvider';
 import { AuthProvider } from '@/contexts/AuthProvider';
-import { View } from 'react-native';
+import { AppState, AppStateStatus, View } from 'react-native';
 import { PedometerProvider } from '@/contexts/PedometerProvider';
 import { FirestoreProvider } from '@/contexts/FirestoreProvider';
+import { AppStateProvider } from '@/contexts/AppStateProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -55,11 +56,13 @@ function RootLayoutNav() {
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
           <ServerProvider>
-            <PedometerProvider>
-              <View className="h-[110vh] w-[100vw] bg-green-900">
-                <Slot />
-              </View>
-            </PedometerProvider>
+            <AppStateProvider>
+              <PedometerProvider>
+                <View className="h-[110vh] w-[100vw] bg-green-900">
+                  <Slot />
+                </View>
+              </PedometerProvider>
+            </AppStateProvider>
           </ServerProvider>
         </QueryClientProvider>
       </AuthProvider>

@@ -18,6 +18,7 @@ export default {
     ios: {
       supportsTablet: true,
       googleServicesFile: './GoogleService-Info.plist',
+      bundleIdentifier: 'rpgstepper.android'
     },
     android: {
       adaptiveIcon: {
